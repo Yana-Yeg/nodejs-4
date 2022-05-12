@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const { default: mongoose } = require("mongoose");
 
 module.exports = {
   addPostValidation: (req, res, next) => {
@@ -12,6 +13,7 @@ module.exports = {
         .required(),
       phone: Joi.string().required(),
       favorite: Joi.boolean().optional(),
+      owner: mongoose.SchemaTypes.ObjectId.optional(),
     });
 
     const validResult = schema.validate(req.body);
@@ -36,6 +38,7 @@ module.exports = {
         .optional(),
       phone: Joi.string().optional(),
       favorite: Joi.boolean().optional(),
+      owner: mongoose.SchemaTypes.ObjectId.optional(),
     });
 
     const validResult = schema.validate(req.body);
@@ -58,6 +61,31 @@ module.exports = {
         status: validResult.error.details,
       });
     }
+    next();
+  },
+
+  userSingupValidation: (req, res, next) => {
+    const schema = Joi.object({
+      email: Joi.string()
+        .email({
+          minDomainSegments: 2,
+          tlds: { allow: ["com", "net", "ua"] },
+        })
+        .required(),
+      passwordHash: Joi.string().required(),
+      subscription: Joi.string().optional(),
+      token: Joi.string().optional(),
+    });
+
+    const validResult = schema.validate(req.body);
+    if (validResult.error) {
+      return res.status(400).json({
+        message: "invaliv email or password",
+        contentType: "application/json",
+        status: validResult.error.details,
+      });
+    }
+
     next();
   },
 };
