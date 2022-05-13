@@ -5,22 +5,17 @@ const { Users } = require("../db/usersModel");
 // const { Conflict } = require("http-errors");
 
 const register = async (userParams) => {
-  try {
-    const { email, password, subscription } = userParams;
-    console.log(userParams);
-    const newUser = await Users.create({
-      email,
-      passwordHash: await bcryptjs.hash(password, 8),
-      subscription,
-    });
-    return newUser;
-  } catch (error) {
-    console.error(error.message);
-  }
+  const { email, password, subscription } = userParams;
+  console.log(userParams);
+  const newUser = await Users.create({
+    email,
+    passwordHash: await bcryptjs.hash(password, 8),
+    subscription,
+  });
+  return newUser;
 };
 
 // const signup = async (userParams) => {
-//   try {
 //     const { email, password, subscription } = userParams;
 //     const exsistUser = await Users.findOne({ email });
 //     if (exsistUser) {
@@ -34,47 +29,32 @@ const register = async (userParams) => {
 //       subscription,
 //     });
 //     return user;
-//   } catch (error) {
-//     console.error(error.message);
-//   }
 // };
 
 const login = async (email, password) => {
-  try {
-    const user = await Users.findOne({ email });
-    console.log(user);
-    // const hash = await bcryptjs.hash(password, 8);
-    // const s = await bcryptjs.compare(password, hash);
-    // if (!())) return;
-    // const token = jwt.sign(
-    //   {
-    //     email: user.email,
-    //     subscription: user.subscription,
-    //   },
-    //   process.env.JWT_SECRET
-    // );
-    return user;
-  } catch (error) {
-    console.error(error.message);
-  }
+  const user = await Users.findOne({ email });
+  console.log(user);
+  // const hash = await bcryptjs.hash(password, 8);
+  // const s = await bcryptjs.compare(password, hash);
+  // if (!())) return;
+  // const token = jwt.sign(
+  //   {
+  //     email: user.email,
+  //     subscription: user.subscription,
+  //   },
+  //   process.env.JWT_SECRET
+  // );
+  return user;
 };
 
 const logout = async (name, email, phone, favorite) => {
-  try {
-    // const newContact = await Contacts.create({ name, email, phone, favorite });
-    // return newContact;
-  } catch (error) {
-    console.error(error.message);
-  }
+  // const newContact = await Contacts.create({ name, email, phone, favorite });
+  // return newContact;
 };
 
 const current = async (name, email, phone, favorite) => {
-  try {
-    // const newContact = await Contacts.create({ name, email, phone, favorite });
-    // return newContact;
-  } catch (error) {
-    console.error(error.message);
-  }
+  // const newContact = await Contacts.create({ name, email, phone, favorite });
+  // return newContact;
 };
 
 module.exports = {
