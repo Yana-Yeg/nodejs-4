@@ -2,7 +2,7 @@ const Joi = require("joi");
 const { default: mongoose } = require("mongoose");
 
 module.exports = {
-  addPostValidation: (req, res, next) => {
+  fullPostValidation: (req, res, next) => {
     const schema = Joi.object({
       name: Joi.string().alphanum().min(2).max(30).required(),
       email: Joi.string()
