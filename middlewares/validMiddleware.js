@@ -64,7 +64,7 @@ module.exports = {
     next();
   },
 
-  userSingupValidation: (req, res, next) => {
+  userAuthValidation: (req, res, next) => {
     const schema = Joi.object({
       email: Joi.string()
         .email({
@@ -72,7 +72,7 @@ module.exports = {
           tlds: { allow: ["com", "net", "ua"] },
         })
         .required(),
-      passwordHash: Joi.string().required(),
+      password: Joi.string().required(),
       subscription: Joi.string().optional(),
       token: Joi.string().optional(),
     });
@@ -80,9 +80,9 @@ module.exports = {
     const validResult = schema.validate(req.body);
     if (validResult.error) {
       return res.status(400).json({
-        message: "invaliv email or password",
+        // message: "invaliv email or password",
         contentType: "application/json",
-        status: validResult.error.details,
+        ResponseBody: validResult.error.details,
       });
     }
 

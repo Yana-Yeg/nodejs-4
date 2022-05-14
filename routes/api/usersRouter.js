@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { catchErrors } = require("../../middlewares/catch-errors");
+const {
+  catchErrors,
+  conflict,
+  forbidden,
+} = require("../../middlewares/catch-errors");
 
 const {
   register,
@@ -9,66 +13,31 @@ const {
   logout,
   current,
 } = require("../../models/users");
-const { userSingupValidation } = require("../../middlewares/validMiddleware");
+const { userAuthValidation } = require("../../middlewares/validMiddleware");
 
 router.post(
   "/signup",
-  userSingupValidation,
-  catchErrors(async (req, res) => {
-    console.log("ljfns;jfnsjfns;jlfn");
-    // const { email, password, subscription } = req.body;
-    const user = await register(req.body);
-    // console.log("newUser", newUser);
-    if (user) {
-      res.status(201).json({
-        contentType: "application/json",
-        ResponseBody: { user },
-        // ==== need only
-        // email: "bn222b@egnbvcx.com",
-        // subscription: "starter",
-      });
-    }
-    res.status(409).json({
+  userAuthValidation,
+  conflict(async (req, res) => {
+    const { email, subscription } = await register(req.body);
+    res.status(201).json({
       contentType: "application/json",
-      ResponseBody: { message: "Email in use" },
+      ResponseBody: { user: { email, subscription } },
     });
   })
 );
 
-// router.post("/signup", userSingupValidation, catchErrors(async (req, res) => {
-//   const user = await signup(req.body);
-//   // console.log("newUser", newUser);
-//   if (user) {
-//     res.status(201).json({
-//       contentType: "application/json",
-//       ResponseBody: { user },
-//       // ==== need only
-//       // email: "bn222b@egnbvcx.com",
-//       // subscription: "starter",
-//     });
-//   }
-//   res.status(409).json({
-//     contentType: "application/json",
-//     ResponseBody: { message: "Email in use" },
-//   });
-// }));
-
 router.post(
   "/login",
-  userSingupValidation,
-  catchErrors(async (req, res) => {
-    const { email, password } = req.body;
-    const user = await login(email, password);
-    // console.log("newUser", newUser);
-    if (user) {
+  userAuthValidation,
+  forbidden(async (req, res) => {
+    const { email, subscription, token } = await login(req.body);
+    // console.log("newUser: ", data);
+
+    if ((email, subscription, token)) {
       res.status(200).json({
         contentType: "application/json",
-        ResponseBody: { user },
-        // ==== need only
-        // "token": "exampletoken",
-        // "user": {
-        // "email": "example@example.com",
-        // "subscription": "starter" }
+        ResponseBody: { token, user: { email, subscription } },
       });
     }
     res.status(401).json({
