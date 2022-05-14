@@ -1,23 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const {
-  catchErrors,
+  // catchErrors,
   conflict,
   forbidden,
+  // unauthorize,
 } = require("../../middlewares/catch-errors");
 
 const {
   register,
-  // signup,
   login,
-  logout,
-  current,
+  // logout,
+  // current,
 } = require("../../models/users");
-const { userAuthValidation } = require("../../middlewares/validMiddleware");
+const { userRegLoginValidation } = require("../../middlewares/validMiddleware");
 
 router.post(
   "/signup",
-  userAuthValidation,
+  userRegLoginValidation,
   conflict(async (req, res) => {
     const { email, subscription } = await register(req.body);
     res.status(201).json({
@@ -29,7 +29,7 @@ router.post(
 
 router.post(
   "/login",
-  userAuthValidation,
+  userRegLoginValidation,
   forbidden(async (req, res) => {
     const { email, subscription, token } = await login(req.body);
     // console.log("newUser: ", data);
@@ -46,20 +46,26 @@ router.post(
   })
 );
 
-router.post(
-  "/logout",
-  catchErrors(async (req, res) => {
-    const data = await logout();
-    res.status(200).json(data);
-  })
-);
+// router.post(
+//   "/logout",
+//   unauthorize(async (req, res) => {
+//     const user = await logout(req.body);
+//     if (user) {
+//       user.token = null;
+//       res.status(204);
+//     }
+//   })
+// );
 
-router.post(
-  "/current",
-  catchErrors(async (req, res) => {
-    const data = await current();
-    res.status(200).json(data);
-  })
-);
+// router.get(
+//   "/current",
+//   // userRegLoginValidation,
+//   catchErrors(async (req, res) => {
+//     const user = await current(req.userId);
+//     if (user) {
+//       res.status(200).json(user);
+//     }
+//   })
+// );
 
 module.exports = router;

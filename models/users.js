@@ -4,8 +4,8 @@ const jwt = require("jsonwebtoken");
 const { Users } = require("../db/usersModel");
 // const { Conflict } = require("http-errors");
 
-const register = async (userParams) => {
-  const { email, password, subscription } = userParams;
+const register = async (body) => {
+  const { email, password, subscription } = body;
   // console.log("userParams :", userParams);
   const newUser = await Users.create({
     email,
@@ -31,18 +31,22 @@ const login = async (body) => {
   }
 };
 
-const logout = async (name, email, phone, favorite) => {
-  // const newContact = await Contacts.create({ name, email, phone, favorite });
-  // return newContact;
+const logout = async (body) => {
+  const { _id } = body;
+  // console.log("body", body);
+  const user = await Users.findOne(_id);
+  return user;
 };
 
-const current = async (name, email, phone, favorite) => {
-  // const newContact = await Contacts.create({ name, email, phone, favorite });
-  // return newContact;
+const current = async (userId) => {
+  const { _id } = userId;
+  console.log("_id", _id);
+  const user = await Users.findOne({ _id });
+  console.log("user", user);
+  return user;
 };
 
 module.exports = {
-  // signup,
   register,
   login,
   logout,
