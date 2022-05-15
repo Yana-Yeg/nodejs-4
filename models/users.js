@@ -33,7 +33,7 @@ const login = async (body) => {
 
 const logout = async (body) => {
   const { _id } = body;
-  // console.log("body", body);
+  console.log("body", body);
   const user = await Users.findOne(_id);
   return user;
 };

@@ -4,13 +4,13 @@ const {
   // catchErrors,
   conflict,
   forbidden,
-  // unauthorize,
+  unauthorize,
 } = require("../../middlewares/catch-errors");
 
 const {
   register,
   login,
-  // logout,
+  logout,
   // current,
 } = require("../../models/users");
 const { userRegLoginValidation } = require("../../middlewares/validMiddleware");
@@ -46,16 +46,16 @@ router.post(
   })
 );
 
-// router.post(
-//   "/logout",
-//   unauthorize(async (req, res) => {
-//     const user = await logout(req.body);
-//     if (user) {
-//       user.token = null;
-//       res.status(204);
-//     }
-//   })
-// );
+router.get(
+  "/logout",
+  unauthorize(async (req, res) => {
+    const user = await logout(req.body);
+    if (user) {
+      user.token = null;
+      res.status(204);
+    }
+  })
+);
 
 // router.get(
 //   "/current",
