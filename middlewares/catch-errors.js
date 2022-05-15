@@ -32,16 +32,3 @@ module.exports.forbidden = (middleware) => {
     }
   };
 };
-
-module.exports.unauthorize = (middleware) => {
-  return async (req, res) => {
-    try {
-      await middleware(req, res);
-    } catch (err) {
-      return res.status(401).json({
-        contentType: "application/json",
-        ResponseBody: { message: "Not authorized" },
-      });
-    }
-  };
-};
