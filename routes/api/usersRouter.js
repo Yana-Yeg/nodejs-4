@@ -1,19 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const {
-  // catchErrors,
+  catchErrors,
   conflict,
   forbidden,
-  unauthorize,
 } = require("../../middlewares/catch-errors");
 
-const {
-  register,
-  login,
-  logout,
-  // current,
-} = require("../../models/users");
+const { register, login, findOneUser } = require("../../models/users");
 const { userRegLoginValidation } = require("../../middlewares/validMiddleware");
+const authenticate = require("../../middlewares/authorization");
 
 router.post(
   "/signup",
@@ -32,7 +27,6 @@ router.post(
   userRegLoginValidation,
   forbidden(async (req, res) => {
     const { email, subscription, token } = await login(req.body);
-    // console.log("newUser: ", data);
 
     if ((email, subscription, token)) {
       res.status(200).json({
@@ -48,24 +42,24 @@ router.post(
 
 router.get(
   "/logout",
-  unauthorize(async (req, res) => {
-    const user = await logout(req.body);
-    if (user) {
-      user.token = null;
-      res.status(204);
-    }
+  authenticate,
+  catchErrors(async (req, res) => {
+    const user = await findOneUser(req.user.token);
+    user.token = null;
+    res.sendStatus(204);
   })
 );
 
-// router.get(
-//   "/current",
-//   // userRegLoginValidation,
-//   catchErrors(async (req, res) => {
-//     const user = await current(req.userId);
-//     if (user) {
-//       res.status(200).json(user);
-//     }
-//   })
-// );
+router.get(
+  "/current",
+  authenticate,
+  catchErrors(async (req, res) => {
+    const user = await findOneUser(req.user.token);
+    res.status(200).json({
+      contentType: "application/json",
+      ResponseBody: { user },
+    });
+  })
+);
 
 module.exports = router;
