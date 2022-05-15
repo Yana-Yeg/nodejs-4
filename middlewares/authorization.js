@@ -1,15 +1,34 @@
-const { catchErrors, Unauthorize } = require("./catch-errors");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const { Users } = require("../db/usersModel");
+const { Unauthorized } = require("http-errors");
 
-exports.authorization = catchErrors((req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
-    const authorizationHeader = req.header.authorization;
-    const token = authorizationHeader.replace("Bearer", "");
-    const isToken = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = isToken;
+    const { authorization } = req.headers;
+
+    if (!authorization) {
+      throw new Unauthorized("Not authorized");
+    }
+    const [bearer, token] = authorization.split(" ");
+    if (bearer !== "Bearer") {
+      throw new Unauthorized("Not authorized");
+    }
+    jwt.verify(token, process.env.JWT_SECRET);
+    const user = await Users.findOne({ token });
+    // console.log("user", user);
+    if (!user) {
+      throw new Unauthorized("Not authorized");
+    }
+    req.user = user;
     next();
   } catch (error) {
-    throw new Unauthorize();
+    if (!error.status) {
+      error.status = 401;
+      error.message = "Not authorized!!!";
+    }
+    next(error);
   }
-});
+};
+
+module.exports = authenticate;
