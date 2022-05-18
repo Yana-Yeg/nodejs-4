@@ -6,9 +6,9 @@ const {
   forbidden,
 } = require("../../middlewares/catch-errors");
 
-const { register, login, findOneUser } = require("../../models/users");
+const { register, login, logout, currentUser } = require("../../models/users");
 const { userRegLoginValidation } = require("../../middlewares/validMiddleware");
-const authenticate = require("../../middlewares/authorization");
+const authorize = require("../../middlewares/authorization");
 
 router.post(
   "/signup",
@@ -42,9 +42,9 @@ router.post(
 
 router.get(
   "/logout",
-  authenticate,
+  authorize,
   catchErrors(async (req, res) => {
-    const user = await findOneUser(req.user.token);
+    const user = await logout(req.user.token);
     user.token = null;
     res.sendStatus(204);
   })
@@ -52,9 +52,9 @@ router.get(
 
 router.get(
   "/current",
-  authenticate,
+  authorize,
   catchErrors(async (req, res) => {
-    const user = await findOneUser(req.user.token);
+    const user = await currentUser(req.user.token);
     res.status(200).json({
       contentType: "application/json",
       ResponseBody: { user },
