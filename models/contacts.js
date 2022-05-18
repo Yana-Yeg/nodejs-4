@@ -17,6 +17,9 @@ const updateContact = async (contactId, body) =>
 const updateStatusContact = async (contactId, body) =>
   await Contacts.findByIdAndUpdate({ _id: contactId }, body, { new: true });
 
+const listPaginationContacts = async (options) =>
+  await Contacts.paginate({}, options);
+
 module.exports = {
   listContacts,
   getContactById,
@@ -24,4 +27,5 @@ module.exports = {
   addContact,
   updateContact,
   updateStatusContact,
+  listPaginationContacts,
 };
