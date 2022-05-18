@@ -2,6 +2,9 @@ const { Contacts } = require("../db/contactsModel");
 
 const listContacts = async () => await Contacts.find();
 
+const listPaginationContacts = async ({ skip, limit }) =>
+  await Contacts.find().select({ __v: 0 }).skip(skip).limit(limit);
+
 const getContactById = async (contactId) =>
   await Contacts.findOne({ _id: contactId });
 
@@ -17,8 +20,8 @@ const updateContact = async (contactId, body) =>
 const updateStatusContact = async (contactId, body) =>
   await Contacts.findByIdAndUpdate({ _id: contactId }, body, { new: true });
 
-const listPaginationContacts = async (options) =>
-  await Contacts.paginate({}, options);
+// const listPaginationContacts = async (options) =>
+//   await Contacts.paginate({}, options);
 
 module.exports = {
   listContacts,
