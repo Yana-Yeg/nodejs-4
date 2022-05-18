@@ -27,7 +27,12 @@ const login = async (body) => {
   }
 };
 
-const findOneUser = async (token) => {
+const logout = async (token) => {
+  const user = await Users.findOne({ token }, { token: null }, { new: true });
+  return user;
+};
+
+const currentUser = async (token) => {
   const user = await Users.findOne(
     { token },
     { email: 1, subscription: 1, _id: 0 }
@@ -38,5 +43,6 @@ const findOneUser = async (token) => {
 module.exports = {
   register,
   login,
-  findOneUser,
+  logout,
+  currentUser,
 };
