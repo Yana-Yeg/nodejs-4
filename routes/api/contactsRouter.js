@@ -3,12 +3,13 @@ const router = express.Router();
 const { catchErrors } = require("../../middlewares/catch-errors");
 
 const {
-  listContacts,
+  // listContacts,
   getContactById,
   removeContact,
   addContact,
   updateContact,
   updateStatusContact,
+  listPaginationContacts,
 } = require("../../models/contacts");
 
 const {
@@ -17,10 +18,19 @@ const {
   patchStatusValidation,
 } = require("../../middlewares/validMiddleware");
 
+// router.get(
+//   "/",
+//   catchErrors(async (req, res) => {
+//     const data = await listContacts();
+//     res.status(200).json(data);
+//   })
+// );
+
 router.get(
   "/",
   catchErrors(async (req, res) => {
-    const data = await listContacts();
+    const { skip = 0, limit = 5 } = req.query;
+    const data = await listPaginationContacts({ skip, limit });
     res.status(200).json(data);
   })
 );
@@ -112,5 +122,7 @@ router.patch(
     res.status(200).json({ status: "success", updateContactItemStatus });
   })
 );
+
+// contacts?page=1&limit=20
 
 module.exports = router;
