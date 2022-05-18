@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const { default: mongoose } = require("mongoose");
 
 module.exports = {
   fullPostValidation: (req, res, next) => {
@@ -13,7 +12,7 @@ module.exports = {
         .required(),
       phone: Joi.string().required(),
       favorite: Joi.boolean().optional(),
-      owner: mongoose.SchemaTypes.ObjectId.optional(),
+      owner: Joi.string().optional(),
     });
 
     const validResult = schema.validate(req.body);
@@ -38,7 +37,7 @@ module.exports = {
         .optional(),
       phone: Joi.string().optional(),
       favorite: Joi.boolean().optional(),
-      owner: mongoose.SchemaTypes.ObjectId.optional(),
+      owner: Joi.string().optional(),
     });
 
     const validResult = schema.validate(req.body);
